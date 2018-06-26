@@ -1,55 +1,61 @@
-"""
-With these settings, tests run faster.
-"""
+'''
+Test settings
+
+- Used to run tests fast on the continuous integration server and locally
+'''
 
 from .base import *  # noqa
-from .base import env
 
-# GENERAL
+
+# DEBUG
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#debug
+# Turn debug off so tests run faster
 DEBUG = False
-# https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="2tBu4QMjFWSEdajlYWPleDeX8SARSdwNYCThZO8f53uSbgvNdg0Z7PUZjyauHgXe")
-# https://docs.djangoproject.com/en/dev/ref/settings/#test-runner
-TEST_RUNNER = "django.test.runner.DiscoverRunner"
+TEMPLATES[0]['OPTIONS']['debug'] = False
 
-# CACHES
+# SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#caches
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
+# Note: This key only used for development and testing.
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='CHANGEME!!!')
+
+# Mail settings
+# ------------------------------------------------------------------------------
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
+# In-memory email backend stores messages in django.core.mail.outbox
+# for unit testing purposes
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+
+# CACHING
+# ------------------------------------------------------------------------------
+# Speed advantages of in-memory caching without having to run Memcached
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": ""
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': ''
     }
 }
 
-# PASSWORDS
+# TESTING
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
-PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-# TEMPLATES
+
+# PASSWORD HASHING
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#templates
-TEMPLATES[0]["OPTIONS"]["debug"] = DEBUG  # noqa F405
-TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa F405
-    (
-        "django.template.loaders.cached.Loader",
-        [
-            "django.template.loaders.filesystem.Loader",
-            "django.template.loaders.app_directories.Loader",
-        ],
-    )
+# Use fast password hasher so tests run faster
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
 
-# EMAIL
+# TEMPLATE LOADERS
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
-# https://docs.djangoproject.com/en/dev/ref/settings/#email-host
-EMAIL_HOST = "localhost"
-# https://docs.djangoproject.com/en/dev/ref/settings/#email-port
-EMAIL_PORT = 1025
-
-# Your stuff...
-# ------------------------------------------------------------------------------
+# Keep templates in memory so tests run faster
+TEMPLATES[0]['OPTIONS']['loaders'] = [
+    ['django.template.loaders.cached.Loader', [
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    ], ],
+]

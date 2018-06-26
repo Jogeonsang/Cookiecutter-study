@@ -1,3 +1,2 @@
-# Marcusgram
-
-Django Python React를 이용한 인스타그램 클론코딩
+# nomadgram
+Cloning Instagram with Python Django and React / React Native
