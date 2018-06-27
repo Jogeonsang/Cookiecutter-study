@@ -1,5 +1,5 @@
 """
-Django settings for nomadgram project.
+Django settings for marcusgram project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/dev/topics/settings/
@@ -11,7 +11,7 @@ import environ
 
 # (nomadgram/config/settings/base.py - 3 = nomadgram/)
 ROOT_DIR = environ.Path(__file__) - 3
-APPS_DIR = ROOT_DIR.path('nomadgram')
+APPS_DIR = ROOT_DIR.path('marcusgram')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -56,15 +56,16 @@ THIRD_PARTY_APPS = [
     'taggit_serializer',  # tag serializer
     'rest_auth',  # rest auth
     'rest_auth.registration',  # enable registration
+    'corsheaders', # To accept requests from React
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
     # custom users app
-    'nomadgram.users.apps.UsersConfig',
+    'marcusgram.users.apps.UsersConfig',
     # Your stuff: custom apps go here
-    'nomadgram.images.apps.ImagesConfig',  # images app
-    'nomadgram.notifications.apps.NotificationsConfig'  # notifications app
+    'marcusgram.images.apps.ImagesConfig',  # images app
+    'marcusgram.notifications.apps.NotificationsConfig'  # notifications app
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -75,6 +76,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -85,7 +87,7 @@ MIDDLEWARE = [
 # MIGRATIONS CONFIGURATION
 # ------------------------------------------------------------------------------
 MIGRATION_MODULES = {
-    'sites': 'nomadgram.contrib.sites.migrations'
+    'sites': 'marcusgram.contrib.sites.migrations'
 }
 
 # DEBUG
@@ -109,7 +111,7 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
-    ("""Nomad Coders""", 'nico@nomadcoders.co'),
+    ("""MARCUS""", 'rhcn258@gmail.com'),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
@@ -196,6 +198,7 @@ STATIC_URL = '/static/'
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
     str(APPS_DIR.path('static')),
+    str(ROOT_DIR.path('frontend', 'build', 'static')),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -263,8 +266,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool(
     'DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
-ACCOUNT_ADAPTER = 'nomadgram.users.adapters.AccountAdapter'
-SOCIALACCOUNT_ADAPTER = 'nomadgram.users.adapters.SocialAccountAdapter'
+ACCOUNT_ADAPTER = 'marcusgram.users.adapters.AccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'marcusgram.users.adapters.SocialAccountAdapter'
 
 # Custom user app defaults
 # Select the correct user model
@@ -295,3 +298,5 @@ REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
 
 SOCIALACCOUNT_QUERY_EMAIL = True
+
+CORS_ORIGIN_ALLOW_ALL = True
